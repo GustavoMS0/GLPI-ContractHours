@@ -2,7 +2,7 @@
 <root>
    <name>Contract Hours</name>
    <key>contracthours</key>
-   <state>stable</state>
+   <state>beta</state>
    <logo>https://raw.githubusercontent.com/GustavoMS0/GLPI-ContractHours/main/contracthours.png</logo>
    <description>
       <short>
