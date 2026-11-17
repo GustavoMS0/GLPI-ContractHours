@@ -691,13 +691,13 @@ class PluginContracthoursPool
         if (PluginContracthoursCompat::isCliOrCron()) {
             return;
         }
-        if (!array_key_exists('actiontime', $item->input)) {
-            return;
-        }
 
         $taskId     = method_exists($item, 'getID') ? (int) $item->getID() : (int) ($item->fields['id'] ?? 0);
         $ticketsId  = (int) ($item->input['tickets_id'] ?? $item->fields['tickets_id'] ?? 0);
-        $newMinutes = self::secondsToMinutes((int) $item->input['actiontime']);
+        $actiontime = array_key_exists('actiontime', $item->input)
+            ? (int) $item->input['actiontime']
+            : (int) ($item->fields['actiontime'] ?? 0);
+        $newMinutes = self::secondsToMinutes($actiontime);
 
         if ($taskId <= 0 || $ticketsId <= 0) {
             return;

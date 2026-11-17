@@ -39,14 +39,21 @@ if (!PluginContracthoursCompat::requireSafePost()) {
     return;
 }
 
+$parseIntMin = static function ($raw, int $min) {
+    if (!is_int($raw) && !is_string($raw)) {
+        return false;
+    }
+    return filter_var($raw, FILTER_VALIDATE_INT, ['options' => ['min_range' => $min]]);
+};
+
 $action = trim((string) ($_POST['action'] ?? ''));
 
 if ($action === 'save_pool') {
     Session::checkRight('contract', UPDATE);
 
-    $contractsId = (int) ($_POST['contracts_id'] ?? 0);
+    $contractsId = $parseIntMin($_POST['contracts_id'] ?? null, 1);
     $contract    = new Contract();
-    if ($contractsId <= 0 || !$contract->getFromDB($contractsId)) {
+    if ($contractsId === false || !$contract->getFromDB($contractsId)) {
         PluginContracthoursCompat::denyAccess(__('Contrato não encontrado.', 'contracthours'));
         return;
     }
@@ -64,7 +71,7 @@ if ($action === 'save_pool') {
         return;
     }
 
-    $hours    = max(0, (int) ($_POST['contracted_hours'] ?? 0));
+    $hours    = max(0, min(100000, (int) ($_POST['contracted_hours'] ?? 0)));
     $minsPart = max(0, min(59, (int) ($_POST['contracted_minutes_part'] ?? 0)));
     $rateRaw  = PluginContracthoursCompat::fromSanitizedInput((string) ($_POST['hourly_rate'] ?? '0'));
 
@@ -87,9 +94,9 @@ if ($action === 'save_pool') {
 if ($action === 'manual_adjustment') {
     Session::checkRight('contract', UPDATE);
 
-    $contractsId = (int) ($_POST['contracts_id'] ?? 0);
+    $contractsId = $parseIntMin($_POST['contracts_id'] ?? null, 1);
     $contract    = new Contract();
-    if ($contractsId <= 0 || !$contract->getFromDB($contractsId)) {
+    if ($contractsId === false || !$contract->getFromDB($contractsId)) {
         PluginContracthoursCompat::denyAccess(__('Contrato não encontrado.', 'contracthours'));
         return;
     }
@@ -108,7 +115,7 @@ if ($action === 'manual_adjustment') {
     }
 
     $adjType = strtolower(trim((string) ($_POST['adjustment_type'] ?? 'credit')));
-    $hours   = max(0, (int) ($_POST['adjust_hours'] ?? 0));
+    $hours   = max(0, min(10000, (int) ($_POST['adjust_hours'] ?? 0)));
     $mins    = max(0, min(59, (int) ($_POST['adjust_minutes'] ?? 0)));
     $total   = ($hours * 60) + $mins;
 
@@ -134,9 +141,14 @@ if ($action === 'manual_adjustment') {
 if ($action === 'set_ticket_link') {
     Session::checkRight('ticket', UPDATE);
 
-    $ticketsId = (int) ($_POST['tickets_id'] ?? 0);
+    if (!method_exists('Session', 'getCurrentInterface') || Session::getCurrentInterface() !== 'central') {
+        PluginContracthoursCompat::denyAccess();
+        return;
+    }
+
+    $ticketsId = $parseIntMin($_POST['tickets_id'] ?? null, 1);
     $ticket    = new Ticket();
-    if ($ticketsId <= 0 || !$ticket->getFromDB($ticketsId)) {
+    if ($ticketsId === false || !$ticket->getFromDB($ticketsId)) {
         PluginContracthoursCompat::denyAccess(__('Chamado não encontrado.', 'contracthours'));
         return;
     }
@@ -154,16 +166,20 @@ if ($action === 'set_ticket_link') {
         return;
     }
 
-    $contractsId = max(0, (int) ($_POST['contracts_id'] ?? 0));
+    $contractsId = $parseIntMin($_POST['contracts_id'] ?? null, 0);
+    if ($contractsId === false) {
+        PluginContracthoursCompat::denyAccess();
+        return;
+    }
+
     if ($contractsId > 0) {
         $contract = new Contract();
-        if (!$contract->getFromDB($contractsId) || !PluginContracthoursPool::isPoolActiveAndValid($contractsId)) {
-            Session::addMessageAfterRedirect(
-                __('O contrato selecionado não possui um banco de horas ativo.', 'contracthours'),
-                false,
-                ERROR
-            );
-            Html::back();
+        if (!$contract->getFromDB($contractsId)) {
+            PluginContracthoursCompat::denyAccess();
+            return;
+        }
+        if (method_exists($contract, 'canViewItem') && !$contract->canViewItem()) {
+            PluginContracthoursCompat::denyAccess();
             return;
         }
 
@@ -172,6 +188,25 @@ if ($action === 'set_ticket_link') {
             : (int) ($contract->fields['entities_id'] ?? 0);
         if (method_exists('Session', 'haveAccessToEntity') && !Session::haveAccessToEntity($contractEntity)) {
             PluginContracthoursCompat::denyAccess();
+            return;
+        }
+
+        $allowedEntities = array_merge(
+            [$ticketEntity],
+            PluginContracthoursCompat::getEntitiesAncestorsFallback($ticketEntity)
+        );
+        if (!in_array($contractEntity, $allowedEntities, true)) {
+            PluginContracthoursCompat::denyAccess();
+            return;
+        }
+
+        if (!PluginContracthoursPool::isPoolActiveAndValid($contractsId)) {
+            Session::addMessageAfterRedirect(
+                __('O contrato selecionado não possui um banco de horas ativo.', 'contracthours'),
+                false,
+                ERROR
+            );
+            Html::back();
             return;
         }
     }

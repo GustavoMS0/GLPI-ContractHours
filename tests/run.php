@@ -64,6 +64,7 @@ function resetFixture(): void
     $PLUGIN_HOOKS                   = [];
     $CFG_GLPI                       = ['root_doc' => '', 'url_base' => 'https://glpi.local'];
     Config::$store                  = [];
+    Dropdown::$customNames          = [];
     Plugin::$registered             = [];
     Plugin::$webDirCalled           = false;
     Html::$backed                   = false;
@@ -153,14 +154,19 @@ function test_plugin_manifest_and_hooks(): void
     assertTrueValue(isset($PLUGIN_HOOKS['item_purge']['contracthours']['Ticket']), 'item_purge Ticket');
     assertTrueValue(isset($PLUGIN_HOOKS['item_purge']['contracthours']['Contract']), 'item_purge Contract');
 
-    $tabRegistered = false;
+    $tabRegistered    = false;
+    $configRegistered = false;
     foreach (Plugin::$registered as $entry) {
         if ($entry['class'] === PluginContracthoursTab::class) {
             $tabRegistered = true;
             assertSameValue(['Contract', 'Ticket'], $entry['params']['addtabon'] ?? [], 'Tab registered on Contract and Ticket');
         }
+        if ($entry['class'] === PluginContracthoursConfig::class) {
+            $configRegistered = true;
+        }
     }
     assertTrueValue($tabRegistered, 'Tab class registered');
+    assertFalseValue($configRegistered, 'Config helper class not registered as CommonGLPI');
 }
 
 function test_compat_and_rightname_typing(): void
@@ -400,6 +406,16 @@ function test_block_on_overrun_guard(): void
     $cliTask->input           = ['tickets_id' => 300, 'actiontime' => 7200];
     PluginContracthoursPool::preItemAddTicketTask($cliTask);
     assertTrueValue(is_array($cliTask->input), 'CLI/cron bypasses interactive block');
+
+    // Troca de contrato do chamado + atualização sem actiontime em $item->input deve usar $fields['actiontime'] e bloquear estouro
+    $GLOBALS['TEST_CLI_MODE'] = false;
+    seedContractWithPool(31, 0, 'Contrato Menor', 15, ['block_on_overrun' => 1]);
+    PluginContracthoursPool::setTicketContractLink(300, 31, 2);
+    $switchTask         = new TicketTask();
+    $switchTask->fields = ['id' => 601, 'tickets_id' => 300, 'actiontime' => 2400, 'entities_id' => 0, 'users_id' => 2];
+    $switchTask->input  = ['id' => 601, 'content' => 'Updated note only'];
+    PluginContracthoursPool::preItemUpdateTicketTask($switchTask);
+    assertSameValue(false, $switchTask->input, 'Contract-switch update without actiontime in input still blocks overrun');
 }
 
 function test_threshold_alert_and_overrun_transitions(): void
@@ -634,11 +650,14 @@ function test_front_endpoints_post_and_security(): void
 
         $_SERVER = ['REQUEST_METHOD' => 'GET'];
         $_POST   = [];
+        Dropdown::$customNames = [0 => '&nbsp;'];
         ob_start();
         include GLPI_ROOT . '/contracthours/front/config.form.php';
         $dashboardHtml = (string) ob_get_clean();
         assertStringContains('Contrato Front', $dashboardHtml, 'Dashboard lists active contract');
         assertStringContains('09:15', $dashboardHtml, 'Dashboard displays remaining balance');
+        assertStringContains('#0', $dashboardHtml, 'Empty &nbsp; dropdown name falls back to #id');
+        assertStringNotContains('&amp;nbsp;', $dashboardHtml, 'Raw &nbsp; is not double-escaped');
 
         // 5. Cross-origin POST deve falhar
         $_SERVER = ['REQUEST_METHOD' => 'POST', 'HTTP_SEC_FETCH_SITE' => 'cross-site'];
@@ -670,6 +689,136 @@ function test_front_endpoints_post_and_security(): void
             $denied = true;
         }
         assertTrueValue($denied, 'Read-only config right rejects POST');
+    } finally {
+        $_SERVER = $origServer;
+        $_POST   = $origPost;
+    }
+}
+
+function assertDeniedInclude(string $scriptPath, string $label): void
+{
+    if (property_exists('Html', 'rightErrorDisplayed')) {
+        Html::$rightErrorDisplayed = false;
+    }
+    Html::$backed = false;
+
+    $denied = false;
+    try {
+        include $scriptPath;
+    } catch (RuntimeException $e) {
+        if (PluginContracthoursCompat::glpiMajor() >= 12) {
+            assertTrueValue(
+                $e instanceof \Glpi\Exception\Http\AccessDeniedHttpException,
+                $label . ' (GLPI 12 throws AccessDeniedHttpException)'
+            );
+        }
+        $denied = true;
+    }
+    if (PluginContracthoursCompat::glpiMajor() < 12 && property_exists('Html', 'rightErrorDisplayed') && Html::$rightErrorDisplayed) {
+        $denied = true;
+    }
+
+    assertTrueValue($denied, $label);
+    assertFalseValue(Html::$backed, $label . ' must not redirect back');
+}
+
+function test_security_idor_input_validation_and_origin_scheme(): void
+{
+    global $DB;
+
+    $origServer = $_SERVER;
+    $origPost   = $_POST;
+
+    try {
+        resetFixture();
+        $DB->seed('glpi_entities', [
+            ['id' => 0, 'entities_id' => 0, 'name' => 'Root'],
+            ['id' => 5, 'entities_id' => 0, 'name' => 'Entidade A'],
+            ['id' => 99, 'entities_id' => 0, 'name' => 'Entidade B'],
+        ]);
+        seedContractWithPool(90, 5, 'Contrato A', 120);
+        seedContractWithPool(91, 99, 'Contrato B', 120);
+        $DB->seed('glpi_tickets', [
+            ['id' => 900, 'entities_id' => 5, 'name' => 'Ticket Entidade A'],
+        ]);
+
+        // 1. Rejeição de esquema divergente (http vs https) mesmo quando HTTP_HOST coincide e Sec-Fetch-Site está ausente
+        $_SERVER = [
+            'REQUEST_METHOD' => 'POST',
+            'HTTP_HOST'      => 'glpi.local',
+            'HTTP_ORIGIN'    => 'http://glpi.local',
+        ];
+        $_POST = ['update_global' => '1'];
+        assertDeniedInclude(GLPI_ROOT . '/contracthours/front/config.form.php', 'Scheme mismatch HTTP origin rejected against HTTPS url_base');
+
+        // 2. Inputs inválidos em config.form.php (não podem ser coagidos a 0)
+        $_SERVER = ['REQUEST_METHOD' => 'POST', 'HTTP_SEC_FETCH_SITE' => 'same-origin'];
+        foreach (['', 'abc', '-1', ['bad']] as $badVal) {
+            $_POST = [
+                'save_entity_default' => '1',
+                'entities_id'         => $badVal,
+                'contracts_id'        => '90',
+            ];
+            assertDeniedInclude(GLPI_ROOT . '/contracthours/front/config.form.php', 'Invalid entities_id rejected in save_entity_default');
+
+            $_POST = [
+                'save_entity_default' => '1',
+                'entities_id'         => '5',
+                'contracts_id'        => $badVal,
+            ];
+            assertDeniedInclude(GLPI_ROOT . '/contracthours/front/config.form.php', 'Invalid contracts_id rejected in save_entity_default');
+
+            $_POST = [
+                'delete_entity_default' => '1',
+                'entities_id'           => $badVal,
+            ];
+            assertDeniedInclude(GLPI_ROOT . '/contracthours/front/config.form.php', 'Invalid entities_id rejected in delete_entity_default');
+        }
+        assertSameValue([], PluginContracthoursConfig::getEntityDefaults(), 'No entity defaults written by invalid inputs');
+
+        // 3. IDOR cross-entity em save_entity_default
+        Session::$accessibleEntities = [0 => true, 5 => true];
+        $_POST = [
+            'save_entity_default' => '1',
+            'entities_id'         => '5',
+            'contracts_id'        => '91', // pertence à entidade 99 (sem acesso)
+        ];
+        assertDeniedInclude(GLPI_ROOT . '/contracthours/front/config.form.php', 'Cross-entity contract rejected in save_entity_default');
+
+        // 4. Validação estrita em pool.form.php (set_ticket_link & save_pool)
+        Session::$accessibleEntities = null;
+        foreach (['', 'abc', '-1', ['bad']] as $badVal) {
+            $_POST = [
+                'action'       => 'set_ticket_link',
+                'tickets_id'   => '900',
+                'contracts_id' => $badVal,
+            ];
+            assertDeniedInclude(GLPI_ROOT . '/contracthours/front/pool.form.php', 'Invalid contracts_id rejected in set_ticket_link');
+
+            $_POST = [
+                'action'       => 'save_pool',
+                'contracts_id' => $badVal,
+            ];
+            assertDeniedInclude(GLPI_ROOT . '/contracthours/front/pool.form.php', 'Invalid contracts_id rejected in save_pool');
+        }
+
+        // 5. IDOR em set_ticket_link (contrato 91 pertence à entidade irmã 99, fora da hierarquia do chamado 900)
+        $_POST = [
+            'action'       => 'set_ticket_link',
+            'tickets_id'   => '900',
+            'contracts_id' => '91',
+        ];
+        assertDeniedInclude(GLPI_ROOT . '/contracthours/front/pool.form.php', 'Sibling entity contract rejected in set_ticket_link');
+        assertSameValue(0, PluginContracthoursPool::getTicketContractLink(900), 'Ticket link remains unset after IDOR');
+
+        // 6. Bloqueio de interface não-central em set_ticket_link
+        Session::$interface = 'helpdesk';
+        $_POST = [
+            'action'       => 'set_ticket_link',
+            'tickets_id'   => '900',
+            'contracts_id' => '90',
+        ];
+        assertDeniedInclude(GLPI_ROOT . '/contracthours/front/pool.form.php', 'Non-central interface rejected in set_ticket_link');
     } finally {
         $_SERVER = $origServer;
         $_POST   = $origPost;
@@ -709,6 +858,7 @@ $tests = [
     'test_contract_and_ticket_purge_cleanup',
     'test_tabs_security_and_rendering',
     'test_front_endpoints_post_and_security',
+    'test_security_idor_input_validation_and_origin_scheme',
     'test_install_and_uninstall_lifecycle',
 ];
 

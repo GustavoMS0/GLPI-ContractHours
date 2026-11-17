@@ -364,10 +364,32 @@ class PluginContracthoursCompat
         $defaultOriginPort   = $originScheme === 'https' ? 443 : 80;
         $effectiveOriginPort = $originPort !== null ? (int) $originPort : $defaultOriginPort;
 
+        $urlBase    = trim((string) ($cfgGlpi['url_base'] ?? ''));
+        $baseScheme = $urlBase !== '' ? strtolower((string) parse_url($urlBase, PHP_URL_SCHEME)) : '';
+        $serverScheme = '';
+        if (!empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off') {
+            $serverScheme = 'https';
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+            $fwdProto = strtolower(trim(explode(',', (string) $_SERVER['HTTP_X_FORWARDED_PROTO'])[0]));
+            if ($fwdProto === 'http' || $fwdProto === 'https') {
+                $serverScheme = $fwdProto;
+            }
+        } elseif (!empty($_SERVER['REQUEST_SCHEME'])) {
+            $reqScheme = strtolower(trim((string) $_SERVER['REQUEST_SCHEME']));
+            if ($reqScheme === 'http' || $reqScheme === 'https') {
+                $serverScheme = $reqScheme;
+            }
+        } elseif ($baseScheme === 'http' || $baseScheme === 'https') {
+            $serverScheme = $baseScheme;
+        }
+
         $rawHttpHost = trim((string) ($_SERVER['HTTP_HOST'] ?? ''));
         if ($rawHttpHost !== '') {
             $parsed = self::splitHostPort($rawHttpHost);
             if ($parsed['host'] !== '' && $originHost === $parsed['host']) {
+                if ($serverScheme !== '' && $originScheme !== $serverScheme) {
+                    return false;
+                }
                 if ($parsed['port'] !== null) {
                     if ($effectiveOriginPort === (int) $parsed['port']) {
                         return true;
@@ -378,12 +400,13 @@ class PluginContracthoursCompat
             }
         }
 
-        $urlBase = trim((string) ($cfgGlpi['url_base'] ?? ''));
         if ($urlBase !== '') {
-            $baseScheme = strtolower((string) parse_url($urlBase, PHP_URL_SCHEME));
-            $baseHost   = strtolower((string) parse_url($urlBase, PHP_URL_HOST));
-            $basePort   = parse_url($urlBase, PHP_URL_PORT);
+            $baseHost = strtolower((string) parse_url($urlBase, PHP_URL_HOST));
+            $basePort = parse_url($urlBase, PHP_URL_PORT);
             if ($baseHost !== '' && $originHost === $baseHost) {
+                if (($baseScheme === 'http' || $baseScheme === 'https') && $originScheme !== $baseScheme) {
+                    return false;
+                }
                 $defaultBasePort   = $baseScheme === 'https' ? 443 : ($baseScheme === 'http' ? 80 : null);
                 $effectiveBasePort = $basePort !== null ? (int) $basePort : $defaultBasePort;
                 if ($effectiveBasePort === null || $effectiveOriginPort === $effectiveBasePort) {

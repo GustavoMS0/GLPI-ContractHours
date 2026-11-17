@@ -50,7 +50,6 @@ function plugin_init_contracthours()
     ];
 
     if (class_exists('Plugin') && method_exists('Plugin', 'registerClass')) {
-        Plugin::registerClass(PluginContracthoursConfig::class);
         Plugin::registerClass(PluginContracthoursTab::class, [
             'addtabon' => ['Contract', 'Ticket'],
         ]);

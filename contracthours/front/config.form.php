@@ -55,24 +55,54 @@ if (strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? '')) === 'POST') {
         return;
     }
 
+    $parseNonNegInt = static function ($raw) {
+        if (!is_int($raw) && !is_string($raw)) {
+            return false;
+        }
+        return filter_var($raw, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
+    };
+
     if (isset($_POST['save_entity_default'])) {
-        $entitiesId  = (int) ($_POST['entities_id'] ?? -1);
-        $contractsId = (int) ($_POST['contracts_id'] ?? 0);
+        $entitiesId  = $parseNonNegInt($_POST['entities_id'] ?? null);
+        $contractsId = $parseNonNegInt($_POST['contracts_id'] ?? null);
         $isRecursive = empty($_POST['is_recursive']) ? 0 : 1;
 
-        if ($entitiesId < 0 || (method_exists('Session', 'haveAccessToEntity') && !Session::haveAccessToEntity($entitiesId))) {
+        if ($entitiesId === false || $contractsId === false) {
             PluginContracthoursCompat::denyAccess();
             return;
         }
 
-        if ($contractsId > 0 && !PluginContracthoursPool::isPoolActiveAndValid($contractsId)) {
-            Session::addMessageAfterRedirect(
-                __('Selecione um contrato com pool de horas ativo.', 'contracthours'),
-                false,
-                ERROR
-            );
-            Html::back();
+        if (method_exists('Session', 'haveAccessToEntity') && !Session::haveAccessToEntity($entitiesId)) {
+            PluginContracthoursCompat::denyAccess();
             return;
+        }
+
+        if ($contractsId > 0) {
+            $contract = new Contract();
+            if (!$contract->getFromDB($contractsId)) {
+                PluginContracthoursCompat::denyAccess();
+                return;
+            }
+            if (method_exists($contract, 'canViewItem') && !$contract->canViewItem()) {
+                PluginContracthoursCompat::denyAccess();
+                return;
+            }
+            $contractEntity = method_exists($contract, 'getEntityID')
+                ? (int) $contract->getEntityID()
+                : (int) ($contract->fields['entities_id'] ?? 0);
+            if (method_exists('Session', 'haveAccessToEntity') && !Session::haveAccessToEntity($contractEntity)) {
+                PluginContracthoursCompat::denyAccess();
+                return;
+            }
+            if (!PluginContracthoursPool::isPoolActiveAndValid($contractsId)) {
+                Session::addMessageAfterRedirect(
+                    __('Selecione um contrato com pool de horas ativo.', 'contracthours'),
+                    false,
+                    ERROR
+                );
+                Html::back();
+                return;
+            }
         }
 
         PluginContracthoursConfig::setEntityDefault($entitiesId, $contractsId, $isRecursive);
@@ -82,8 +112,8 @@ if (strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? '')) === 'POST') {
     }
 
     if (isset($_POST['delete_entity_default'])) {
-        $entitiesId = (int) ($_POST['entities_id'] ?? -1);
-        if ($entitiesId < 0 || (method_exists('Session', 'haveAccessToEntity') && !Session::haveAccessToEntity($entitiesId))) {
+        $entitiesId = $parseNonNegInt($_POST['entities_id'] ?? null);
+        if ($entitiesId === false || (method_exists('Session', 'haveAccessToEntity') && !Session::haveAccessToEntity($entitiesId))) {
             PluginContracthoursCompat::denyAccess();
             return;
         }
@@ -97,6 +127,17 @@ if (strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? '')) === 'POST') {
 
 $e = static function (string $value): string {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+};
+
+$entityName = static function (int $entityId): string {
+    if (class_exists('Dropdown') && method_exists('Dropdown', 'getDropdownName')) {
+        $raw     = PluginContracthoursCompat::fromCore((string) Dropdown::getDropdownName('glpi_entities', $entityId));
+        $trimmed = trim(str_replace('&nbsp;', '', $raw));
+        if ($trimmed !== '') {
+            return $trimmed;
+        }
+    }
+    return '#' . $entityId;
 };
 
 $config         = PluginContracthoursConfig::getConfig();
@@ -169,7 +210,7 @@ if (empty($activePools)) {
         $cname     = trim((string) ($pool['contract_name'] ?? ''));
         $cnum      = trim((string) ($pool['contract_num'] ?? ''));
         $cLabel    = $cname !== '' ? ($cnum !== '' ? ($cname . ' (' . $cnum . ')') : $cname) : ('#' . $cid);
-        $entityTxt = class_exists('Dropdown') ? Dropdown::getDropdownName('glpi_entities', (int) $pool['entities_id']) : ('#' . (int) $pool['entities_id']);
+        $entityTxt = $entityName((int) $pool['entities_id']);
         $pct       = (int) $pool['consumption_pct'];
         $barWidth  = max(0, min(100, $pct));
 
@@ -187,7 +228,7 @@ if (empty($activePools)) {
 
         echo '<tr>';
         echo '<td>' . $e($cLabel) . '</td>';
-        echo '<td>' . $e((string) $entityTxt) . '</td>';
+        echo '<td>' . $e($entityTxt) . '</td>';
         echo '<td>' . $e(PluginContracthoursPool::formatMinutes((int) $pool['contracted_minutes'])) . '</td>';
         echo '<td>' . $e(PluginContracthoursPool::formatMinutes((int) $pool['consumed_minutes'])) . '</td>';
         echo '<td class="fw-bold">' . $e(PluginContracthoursPool::formatMinutes((int) $pool['remaining_minutes'])) . '</td>';
@@ -271,14 +312,14 @@ if (empty($entityDefaults)) {
 
     foreach ($entityDefaults as $eid => $entry) {
         $cid       = (int) $entry['contracts_id'];
-        $entityTxt = class_exists('Dropdown') ? Dropdown::getDropdownName('glpi_entities', (int) $eid) : ('#' . (int) $eid);
+        $entityTxt = $entityName((int) $eid);
         $cLabel    = isset($poolMap[$cid]) ? (string) $poolMap[$cid]['contract_name'] : ('#' . $cid);
         if ($cLabel === '') {
             $cLabel = '#' . $cid;
         }
 
         echo '<tr>';
-        echo '<td>' . $e((string) $entityTxt) . '</td>';
+        echo '<td>' . $e($entityTxt) . '</td>';
         echo '<td>' . $e($cLabel) . '</td>';
         echo '<td>' . $e(!empty($entry['is_recursive']) ? __('Sim', 'contracthours') : __('Não', 'contracthours')) . '</td>';
         if ($canUpdate) {

@@ -296,7 +296,7 @@ namespace {
                 }
                 return true;
             }
-            if (preg_match('/DROP\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?`?([a-zA-Z0-9_]+)`?/i', $sql, $m)) {
+            if (preg_match('/DROP\s+TABLE\s+(?:IF\s+EXISTS\s+)?`?([a-zA-Z0-9_]+)`?/i', $sql, $m)) {
                 $table = $m[1];
                 unset($this->tables[$table], $this->autoIncrement[$table], $this->schemas[$table]);
                 return true;
@@ -758,9 +758,16 @@ namespace {
 
     class Dropdown
     {
+        /** @var array<int, string> */
+        public static $customNames = [];
+
         public static function getDropdownName($table, $id): string
         {
-            return '#' . (int) $id;
+            $intId = (int) $id;
+            if (array_key_exists($intId, self::$customNames)) {
+                return self::$customNames[$intId];
+            }
+            return '#' . $intId;
         }
     }
 
