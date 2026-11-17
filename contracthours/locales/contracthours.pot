@@ -1,0 +1,338 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026 by G. Martins
+# This file is distributed under the same license as the Contract Hours package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Contract Hours 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/GustavoMS0/GLPI-ContractHours/issues\n"
+"POT-Creation-Date: 2026-11-17 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: G. Martins\n"
+"Language-Team: Portuguese (Brazil)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "-- Selecione --"
+msgstr ""
+
+msgid "Ajuste Manual de Saldo"
+msgstr ""
+
+msgid "Ajuste manual"
+msgstr ""
+
+msgid "Ajuste manual registrado no razão."
+msgstr ""
+
+msgid "Alerta >= %d%%"
+msgstr ""
+
+msgid "Alerta: o banco de horas do contrato #%d atingiu %d%% de consumo (%s restantes)."
+msgstr ""
+
+msgid "Aplicar contrato"
+msgstr ""
+
+msgid "Atenção: o banco de horas do contrato #%d atingiu saldo negativo (%s)."
+msgstr ""
+
+msgid "Ativo"
+msgstr ""
+
+msgid "Ativos: %d"
+msgstr ""
+
+msgid "Automático (resolução padrão em 4 níveis)"
+msgstr ""
+
+msgid "Ação inválida."
+msgstr ""
+
+msgid "Ações"
+msgstr ""
+
+msgid "Banco de Horas"
+msgstr ""
+
+msgid "Banco de Horas do Chamado"
+msgstr ""
+
+msgid "Bloqueado: o acréscimo de tempo (%s) excede o saldo disponível (%s) no banco de horas do contrato."
+msgstr ""
+
+msgid "Bloqueado: o tempo da tarefa (%s) excede o saldo disponível (%s) no banco de horas do contrato."
+msgstr ""
+
+msgid "Bloquear tarefas ao exceder saldo"
+msgstr ""
+
+msgid "Bloqueio"
+msgstr ""
+
+msgid "Chamado"
+msgstr ""
+
+msgid "Chamado não encontrado."
+msgstr ""
+
+msgid "Ciclo de faturamento"
+msgstr ""
+
+msgid "Configuração do Pool de Horas"
+msgstr ""
+
+msgid "Configuração do pool de horas salva."
+msgstr ""
+
+msgid "Configurações Gerais"
+msgstr ""
+
+msgid "Configurações gerais salvas."
+msgstr ""
+
+msgid "Consumido"
+msgstr ""
+
+msgid "Consumo"
+msgstr ""
+
+msgid "Contract Hours"
+msgstr ""
+
+msgid "Contratado"
+msgstr ""
+
+msgid "Contrato"
+msgstr ""
+
+msgid "Contrato Padrão por Entidade"
+msgstr ""
+
+msgid "Contrato aplicado:"
+msgstr ""
+
+msgid "Contrato com pool ativo"
+msgstr ""
+
+msgid "Contrato não encontrado."
+msgstr ""
+
+msgid "Contrato padrão"
+msgstr ""
+
+msgid "Contrato padrão da entidade"
+msgstr ""
+
+msgid "Contrato padrão da entidade atualizado."
+msgstr ""
+
+msgid "Contrato vinculado ao chamado"
+msgstr ""
+
+msgid "Crédito (+)"
+msgstr ""
+
+msgid "Data"
+msgstr ""
+
+msgid "Definir padrão"
+msgstr ""
+
+msgid "Débito"
+msgstr ""
+
+msgid "Débito (-)"
+msgstr ""
+
+msgid "Em alerta"
+msgstr ""
+
+msgid "Em alerta: %d"
+msgstr ""
+
+msgid "Entidade"
+msgstr ""
+
+msgid "Este contrato ainda não possui um banco de horas configurado. Utilize o formulário abaixo para ativar e definir a franquia."
+msgstr ""
+
+msgid "Estorno"
+msgstr ""
+
+msgid "Estouro"
+msgstr ""
+
+msgid "Estouro: %d"
+msgstr ""
+
+msgid "Ex.: Bonificação ou ajuste mensal"
+msgstr ""
+
+msgid "Exibir aba Banco de Horas nos chamados do autoatendimento"
+msgstr ""
+
+msgid "Extrato do Razão (Ledger)"
+msgstr ""
+
+msgid "Franquia (Horas)"
+msgstr ""
+
+msgid "Horas"
+msgstr ""
+
+msgid "Inativo"
+msgstr ""
+
+msgid "Informe uma quantidade de horas ou minutos maior que zero para o ajuste."
+msgstr ""
+
+msgid "Instalado / configurado"
+msgstr ""
+
+msgid "Item de contrato (Ativo vinculado)"
+msgstr ""
+
+msgid "Item de contrato (Chamado)"
+msgstr ""
+
+msgid "Justificativa"
+msgstr ""
+
+msgid "Lançamentos deste Chamado"
+msgstr ""
+
+msgid "Lançar ajuste"
+msgstr ""
+
+msgid "Limiar de alerta (%)"
+msgstr ""
+
+msgid "Limiar padrão de alerta (%)"
+msgstr ""
+
+msgid "Mapeamento da entidade removido."
+msgstr ""
+
+msgid "Mensal"
+msgstr ""
+
+msgid "Minutos"
+msgstr ""
+
+msgid "Minutos adicionais"
+msgstr ""
+
+msgid "Nenhum banco de horas ativo foi encontrado para este chamado pelos critérios automáticos (vínculo direto, ativo associado ou contrato padrão da entidade)."
+msgstr ""
+
+msgid "Nenhum contrato padrão por entidade configurado."
+msgstr ""
+
+msgid "Nenhum contrato possui banco de horas ativo até o momento. Acesse um Contrato e configure a aba Banco de Horas."
+msgstr ""
+
+msgid "Nenhum lançamento registrado até o momento."
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Não"
+msgstr ""
+
+msgid "Não configurado"
+msgstr ""
+
+msgid "O contrato selecionado não possui um banco de horas ativo."
+msgstr ""
+
+msgid "Observação"
+msgstr ""
+
+msgid "Origem da requisição não permitida."
+msgstr ""
+
+msgid "Painel de Bancos de Horas Ativos"
+msgstr ""
+
+msgid "Percentual padrão de consumo sugerido ao criar um novo banco de horas de contrato (1 a 100%)."
+msgstr ""
+
+msgid "Permitir acúmulo (rollover)"
+msgstr ""
+
+msgid "Pool ativo"
+msgstr ""
+
+msgid "Recursivo"
+msgstr ""
+
+msgid "Remover"
+msgstr ""
+
+msgid "Saldo"
+msgstr ""
+
+msgid "Saldo do Banco de Horas"
+msgstr ""
+
+msgid "Saldo excedido"
+msgstr ""
+
+msgid "Saldo restante"
+msgstr ""
+
+msgid "Saldo:"
+msgstr ""
+
+msgid "Salvar configuração do pool"
+msgstr ""
+
+msgid "Salvar configurações"
+msgstr ""
+
+msgid "Selecione um contrato com pool de horas ativo."
+msgstr ""
+
+msgid "Sem contrato ativo"
+msgstr ""
+
+msgid "Sim"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Tarefa"
+msgstr ""
+
+msgid "Tipo"
+msgstr ""
+
+msgid "Tipo de ajuste"
+msgstr ""
+
+msgid "Total do contrato"
+msgstr ""
+
+msgid "Valor hora"
+msgstr ""
+
+msgid "Variação"
+msgstr ""
+
+msgid "Você possui permissão apenas de leitura nas configurações."
+msgstr ""
+
+msgid "Vínculo Explícito de Contrato"
+msgstr ""
+
+msgid "Vínculo de contrato do chamado atualizado."
+msgstr ""
+
+msgid "Vínculo explícito no chamado"
+msgstr ""

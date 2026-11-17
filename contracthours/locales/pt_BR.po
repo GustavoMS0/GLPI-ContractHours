@@ -1,0 +1,334 @@
+# Portuguese (Brazil) translation
+# Copyright (C) 2026 by G. Martins
+# This file is distributed under the same license as the plugin (GPLv3+).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0.0\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "-- Selecione --"
+msgstr "-- Selecione --"
+
+msgid "Ajuste Manual de Saldo"
+msgstr "Ajuste Manual de Saldo"
+
+msgid "Ajuste manual"
+msgstr "Ajuste manual"
+
+msgid "Ajuste manual registrado no razão."
+msgstr "Ajuste manual registrado no razão."
+
+msgid "Alerta >= %d%%"
+msgstr "Alerta >= %d%%"
+
+msgid "Alerta: o banco de horas do contrato #%d atingiu %d%% de consumo (%s restantes)."
+msgstr "Alerta: o banco de horas do contrato #%d atingiu %d%% de consumo (%s restantes)."
+
+msgid "Aplicar contrato"
+msgstr "Aplicar contrato"
+
+msgid "Atenção: o banco de horas do contrato #%d atingiu saldo negativo (%s)."
+msgstr "Atenção: o banco de horas do contrato #%d atingiu saldo negativo (%s)."
+
+msgid "Ativo"
+msgstr "Ativo"
+
+msgid "Ativos: %d"
+msgstr "Ativos: %d"
+
+msgid "Automático (resolução padrão em 4 níveis)"
+msgstr "Automático (resolução padrão em 4 níveis)"
+
+msgid "Ação inválida."
+msgstr "Ação inválida."
+
+msgid "Ações"
+msgstr "Ações"
+
+msgid "Banco de Horas"
+msgstr "Banco de Horas"
+
+msgid "Banco de Horas do Chamado"
+msgstr "Banco de Horas do Chamado"
+
+msgid "Bloqueado: o acréscimo de tempo (%s) excede o saldo disponível (%s) no banco de horas do contrato."
+msgstr "Bloqueado: o acréscimo de tempo (%s) excede o saldo disponível (%s) no banco de horas do contrato."
+
+msgid "Bloqueado: o tempo da tarefa (%s) excede o saldo disponível (%s) no banco de horas do contrato."
+msgstr "Bloqueado: o tempo da tarefa (%s) excede o saldo disponível (%s) no banco de horas do contrato."
+
+msgid "Bloquear tarefas ao exceder saldo"
+msgstr "Bloquear tarefas ao exceder saldo"
+
+msgid "Bloqueio"
+msgstr "Bloqueio"
+
+msgid "Chamado"
+msgstr "Chamado"
+
+msgid "Chamado não encontrado."
+msgstr "Chamado não encontrado."
+
+msgid "Ciclo de faturamento"
+msgstr "Ciclo de faturamento"
+
+msgid "Configuração do Pool de Horas"
+msgstr "Configuração do Pool de Horas"
+
+msgid "Configuração do pool de horas salva."
+msgstr "Configuração do pool de horas salva."
+
+msgid "Configurações Gerais"
+msgstr "Configurações Gerais"
+
+msgid "Configurações gerais salvas."
+msgstr "Configurações gerais salvas."
+
+msgid "Consumido"
+msgstr "Consumido"
+
+msgid "Consumo"
+msgstr "Consumo"
+
+msgid "Contract Hours"
+msgstr "Contract Hours"
+
+msgid "Contratado"
+msgstr "Contratado"
+
+msgid "Contrato"
+msgstr "Contrato"
+
+msgid "Contrato Padrão por Entidade"
+msgstr "Contrato Padrão por Entidade"
+
+msgid "Contrato aplicado:"
+msgstr "Contrato aplicado:"
+
+msgid "Contrato com pool ativo"
+msgstr "Contrato com pool ativo"
+
+msgid "Contrato não encontrado."
+msgstr "Contrato não encontrado."
+
+msgid "Contrato padrão"
+msgstr "Contrato padrão"
+
+msgid "Contrato padrão da entidade"
+msgstr "Contrato padrão da entidade"
+
+msgid "Contrato padrão da entidade atualizado."
+msgstr "Contrato padrão da entidade atualizado."
+
+msgid "Contrato vinculado ao chamado"
+msgstr "Contrato vinculado ao chamado"
+
+msgid "Crédito (+)"
+msgstr "Crédito (+)"
+
+msgid "Data"
+msgstr "Data"
+
+msgid "Definir padrão"
+msgstr "Definir padrão"
+
+msgid "Débito"
+msgstr "Débito"
+
+msgid "Débito (-)"
+msgstr "Débito (-)"
+
+msgid "Em alerta"
+msgstr "Em alerta"
+
+msgid "Em alerta: %d"
+msgstr "Em alerta: %d"
+
+msgid "Entidade"
+msgstr "Entidade"
+
+msgid "Este contrato ainda não possui um banco de horas configurado. Utilize o formulário abaixo para ativar e definir a franquia."
+msgstr "Este contrato ainda não possui um banco de horas configurado. Utilize o formulário abaixo para ativar e definir a franquia."
+
+msgid "Estorno"
+msgstr "Estorno"
+
+msgid "Estouro"
+msgstr "Estouro"
+
+msgid "Estouro: %d"
+msgstr "Estouro: %d"
+
+msgid "Ex.: Bonificação ou ajuste mensal"
+msgstr "Ex.: Bonificação ou ajuste mensal"
+
+msgid "Exibir aba Banco de Horas nos chamados do autoatendimento"
+msgstr "Exibir aba Banco de Horas nos chamados do autoatendimento"
+
+msgid "Extrato do Razão (Ledger)"
+msgstr "Extrato do Razão (Ledger)"
+
+msgid "Franquia (Horas)"
+msgstr "Franquia (Horas)"
+
+msgid "Horas"
+msgstr "Horas"
+
+msgid "Inativo"
+msgstr "Inativo"
+
+msgid "Informe uma quantidade de horas ou minutos maior que zero para o ajuste."
+msgstr "Informe uma quantidade de horas ou minutos maior que zero para o ajuste."
+
+msgid "Instalado / configurado"
+msgstr "Instalado / configurado"
+
+msgid "Item de contrato (Ativo vinculado)"
+msgstr "Item de contrato (Ativo vinculado)"
+
+msgid "Item de contrato (Chamado)"
+msgstr "Item de contrato (Chamado)"
+
+msgid "Justificativa"
+msgstr "Justificativa"
+
+msgid "Lançamentos deste Chamado"
+msgstr "Lançamentos deste Chamado"
+
+msgid "Lançar ajuste"
+msgstr "Lançar ajuste"
+
+msgid "Limiar de alerta (%)"
+msgstr "Limiar de alerta (%)"
+
+msgid "Limiar padrão de alerta (%)"
+msgstr "Limiar padrão de alerta (%)"
+
+msgid "Mapeamento da entidade removido."
+msgstr "Mapeamento da entidade removido."
+
+msgid "Mensal"
+msgstr "Mensal"
+
+msgid "Minutos"
+msgstr "Minutos"
+
+msgid "Minutos adicionais"
+msgstr "Minutos adicionais"
+
+msgid "Nenhum banco de horas ativo foi encontrado para este chamado pelos critérios automáticos (vínculo direto, ativo associado ou contrato padrão da entidade)."
+msgstr "Nenhum banco de horas ativo foi encontrado para este chamado pelos critérios automáticos (vínculo direto, ativo associado ou contrato padrão da entidade)."
+
+msgid "Nenhum contrato padrão por entidade configurado."
+msgstr "Nenhum contrato padrão por entidade configurado."
+
+msgid "Nenhum contrato possui banco de horas ativo até o momento. Acesse um Contrato e configure a aba Banco de Horas."
+msgstr "Nenhum contrato possui banco de horas ativo até o momento. Acesse um Contrato e configure a aba Banco de Horas."
+
+msgid "Nenhum lançamento registrado até o momento."
+msgstr "Nenhum lançamento registrado até o momento."
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Não"
+msgstr "Não"
+
+msgid "Não configurado"
+msgstr "Não configurado"
+
+msgid "O contrato selecionado não possui um banco de horas ativo."
+msgstr "O contrato selecionado não possui um banco de horas ativo."
+
+msgid "Observação"
+msgstr "Observação"
+
+msgid "Origem da requisição não permitida."
+msgstr "Origem da requisição não permitida."
+
+msgid "Painel de Bancos de Horas Ativos"
+msgstr "Painel de Bancos de Horas Ativos"
+
+msgid "Percentual padrão de consumo sugerido ao criar um novo banco de horas de contrato (1 a 100%)."
+msgstr "Percentual padrão de consumo sugerido ao criar um novo banco de horas de contrato (1 a 100%)."
+
+msgid "Permitir acúmulo (rollover)"
+msgstr "Permitir acúmulo (rollover)"
+
+msgid "Pool ativo"
+msgstr "Pool ativo"
+
+msgid "Recursivo"
+msgstr "Recursivo"
+
+msgid "Remover"
+msgstr "Remover"
+
+msgid "Saldo"
+msgstr "Saldo"
+
+msgid "Saldo do Banco de Horas"
+msgstr "Saldo do Banco de Horas"
+
+msgid "Saldo excedido"
+msgstr "Saldo excedido"
+
+msgid "Saldo restante"
+msgstr "Saldo restante"
+
+msgid "Saldo:"
+msgstr "Saldo:"
+
+msgid "Salvar configuração do pool"
+msgstr "Salvar configuração do pool"
+
+msgid "Salvar configurações"
+msgstr "Salvar configurações"
+
+msgid "Selecione um contrato com pool de horas ativo."
+msgstr "Selecione um contrato com pool de horas ativo."
+
+msgid "Sem contrato ativo"
+msgstr "Sem contrato ativo"
+
+msgid "Sim"
+msgstr "Sim"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Tarefa"
+msgstr "Tarefa"
+
+msgid "Tipo"
+msgstr "Tipo"
+
+msgid "Tipo de ajuste"
+msgstr "Tipo de ajuste"
+
+msgid "Total do contrato"
+msgstr "Total do contrato"
+
+msgid "Valor hora"
+msgstr "Valor hora"
+
+msgid "Variação"
+msgstr "Variação"
+
+msgid "Você possui permissão apenas de leitura nas configurações."
+msgstr "Você possui permissão apenas de leitura nas configurações."
+
+msgid "Vínculo Explícito de Contrato"
+msgstr "Vínculo Explícito de Contrato"
+
+msgid "Vínculo de contrato do chamado atualizado."
+msgstr "Vínculo de contrato do chamado atualizado."
+
+msgid "Vínculo explícito no chamado"
+msgstr "Vínculo explícito no chamado"
+

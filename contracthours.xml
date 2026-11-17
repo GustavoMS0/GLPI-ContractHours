@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <name>Contract Hours</name>
+   <key>contracthours</key>
+   <state>stable</state>
+   <logo>https://raw.githubusercontent.com/GustavoMS0/GLPI-ContractHours/main/contracthours.png</logo>
+   <description>
+      <short>
+         <en>Contract hours bank with automatic TicketTask debit/refund, ledger audit, and threshold alerts.</en>
+         <pt>Banco de horas por contrato com débito e estorno automático de tarefas, extrato auditável e alertas de consumo.</pt>
+      </short>
+      <long>
+         <en>Adds a dedicated hours bank per GLPI Contract using integer-minute accounting to eliminate floating-point drift. Automatically resolves the applicable contract for each Ticket across four tiers (explicit ticket link, contract item on Ticket, contract item on linked asset, or entity default with recursive inheritance), debits and refunds time incrementally on TicketTask creation, update, deletion, and purge, optionally blocks overrun tasks, triggers configurable threshold alerts, and provides tabs on both Contract and Ticket plus an administrative dashboard.</en>
+         <pt>Adiciona banco de horas por Contrato no GLPI com contabilidade em minutos inteiros para evitar desvios de ponto flutuante. Resolve automaticamente o contrato aplicável a cada Chamado em quatro níveis (vínculo explícito no chamado, item de contrato no chamado, item de contrato em ativo vinculado ou contrato padrão da entidade com herança recursiva), debita e estorna horas incrementalmente ao criar, editar, excluir ou expurgar tarefas (TicketTask), permite bloquear estouro de saldo, dispara alertas de limiar configuráveis e oferece abas dedicadas em Contratos e Chamados além de painel administrativo.</pt>
+      </long>
+   </description>
+   <homepage>https://github.com/GustavoMS0/GLPI-ContractHours</homepage>
+   <download>https://github.com/GustavoMS0/GLPI-ContractHours/releases</download>
+   <issues>https://github.com/GustavoMS0/GLPI-ContractHours/issues</issues>
+   <readme>https://github.com/GustavoMS0/GLPI-ContractHours/blob/main/README.md</readme>
+   <authors>
+      <author>Gustavo Martins</author>
+   </authors>
+   <versions>
+      <version>
+         <num>1.0.0</num>
+         <compatibility>~10.0.0 || ~11.0.0 || ~12.0.0</compatibility>
+         <download_url>https://github.com/GustavoMS0/GLPI-ContractHours/releases/download/v1.0.0/contracthours-1.0.0.zip</download_url>
+      </version>
+   </versions>
+   <langs>
+      <lang>pt_BR</lang>
+   </langs>
+   <license>GPLv3+</license>
+   <tags>
+      <en>
+         <tag>contracts</tag>
+         <tag>hours</tag>
+         <tag>tickets</tag>
+         <tag>tasks</tag>
+         <tag>sla</tag>
+         <tag>billing</tag>
+      </en>
+      <pt>
+         <tag>contratos</tag>
+         <tag>banco-de-horas</tag>
+         <tag>chamados</tag>
+         <tag>tarefas</tag>
+         <tag>faturamento</tag>
+      </pt>
+   </tags>
+</root>

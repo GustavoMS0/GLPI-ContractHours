@@ -1,0 +1,46 @@
+.contracthours-tab {
+    padding: 0.75rem 0;
+}
+
+.contracthours-kpi {
+    border: 1px solid rgba(98, 105, 118, 0.16);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.contracthours-kpi-label {
+    font-size: 0.78rem;
+    color: #626976;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.contracthours-kpi-value {
+    font-size: 1.3rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.contracthours-progress {
+    height: 10px;
+}
+
+.contracthours-progress-sm {
+    height: 8px;
+    min-width: 90px;
+}
+
+.contracthours-col-progress {
+    min-width: 150px;
+}
+
+.contracthours-threshold-input {
+    max-width: 160px;
+}
+
+.contracthours-table td,
+.contracthours-table th {
+    vertical-align: middle;
+}
